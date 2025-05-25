@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Proposal: STLF using AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Visualization & Content Choices:
+        - Report Info: Project Title & Author -> Goal: Inform -> Presentation: Prominent in header -> Interaction: Static -> Justification: Standard proposal identification.
+        - Report Info: Navigation -> Goal: Navigate -> Presentation: Sticky top navigation bar -> Interaction: Click to smooth scroll to sections -> Justification: Easy access to all parts of the proposal.
+        - Report Info: Project Introduction -> Goal: Inform -> Presentation: Text block in "Overview" section -> Interaction: Static -> Justification: Provides initial context.
+        - Report Info: Problem Statement -> Goal: Inform -> Presentation: Text block in "Overview", with a distinct callout for the "Nigerian Context" -> Interaction: Static -> Justification: Clearly defines the problem.
+        - Report Info: Aim & Objectives -> Goal: Inform -> Presentation: "Aim" as a prominent statement, "Objectives" as a styled list with icons in "Project Goals" section -> Interaction: Static -> Justification: Clearly presents project goals.
+        - Report Info: Scope of Work -> Goal: Inform -> Presentation: Structured text with bullet points (Dataset, Features, AI Techniques, Metrics) using cards for each sub-section within "Approach & Scope" section. "Dataset" part will have a callout for the Nigerian context. -> Interaction: Static -> Justification: Details the project boundaries clearly.
+        - Report Info: Methodology -> Goal: Inform -> Presentation: Numbered list of phases, styled as distinct steps or cards within "Approach & Scope" section for better readability. -> Interaction: Static -> Justification: Clearly outlines project steps.
+        - Report Info: Expected Outcomes/Deliverables -> Goal: Inform -> Presentation: Bulleted list with icons in "Impact & Outcomes" section. -> Interaction: Static -> Justification: Lists tangible results.
+        - Report Info: Significance -> Goal: Inform -> Presentation: Bulleted list with icons in "Impact & Outcomes" section. -> Interaction: Static -> Justification: Highlights project value.
+        - Report Info: Tentative Timeline -> Goal: Inform/Visualize -> Presentation: HTML/CSS based visual timeline (vertical steps) in "Timeline & Resources" section. -> Interaction: Static visualization -> Justification: More engaging than a plain list.
+        - Report Info: Resources Required -> Goal: Inform -> Presentation: Categorized list (Software, Hardware, etc.) using cards in "Timeline & Resources" section. -> Interaction: Static -> Justification: Lists necessary resources.
+        - Report Info: References -> Goal: Inform -> Presentation: Placeholder text in "References" section. -> Interaction: Static.
+        - Library/Method: HTML, Tailwind CSS for layout and styling. Vanilla JavaScript for navigation (smooth scroll). No Chart.js used as HTML/CSS timeline is more appropriate.
+    -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f5f5f4; /* stone-100 */
+        color: #292524; /* stone-800 */
+      }
+      .nav-link {
+        @apply px-3 py-2 rounded-md text-sm font-medium text-stone-700 hover:bg-sky-100 hover:text-sky-700 transition-colors duration-150;
+      }
+      .nav-link.active {
+        @apply bg-sky-600 text-white hover:bg-sky-700 hover:text-white;
+      }
+      .section-title {
+        @apply text-3xl font-bold text-sky-700 mb-6 pb-2 border-b-2 border-sky-200;
+      }
+      .card {
+        @apply bg-white p-6 rounded-lg shadow-lg mb-6;
+      }
+      .callout {
+        @apply bg-amber-50 border-l-4 border-amber-400 p-4 my-4 rounded-md text-amber-700;
+      }
+      .timeline-item {
+        @apply relative pl-8 sm:pl-32 py-4 group;
+      }
+      .timeline-item:before {
+        @apply content-[''] absolute left-0 sm:left-12 top-2 w-4 h-4 mt-1 bg-sky-500 rounded-full z-10 group-hover:bg-sky-600 transition-colors duration-150;
+      }
+      .timeline-item:after {
+        @apply content-[''] absolute left-[7px] sm:left-[55px] top-6 bottom-0 w-0.5 bg-stone-300 group-last:hidden;
+      }
+      .icon-bullet::before {
+        content: "✓";
+        @apply mr-2 text-sky-600 font-bold;
+      }
+      .objective-icon::before {
+        content: "🎯";
+        @apply mr-2;
+      }
+      .deliverable-icon::before {
+        content: "📄";
+        @apply mr-2;
+      }
+      .significance-icon::before {
+        content: "💡";
+        @apply mr-2;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      #main-nav {
+        transition: background-color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <header
+      id="main-nav"
+      class="bg-stone-50/80 backdrop-blur-md sticky top-0 z-50 shadow-md"
+    >
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <h1 class="text-xl font-bold text-sky-700">
+                STLF Project Proposal
+              </h1>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a href="#overview" class="nav-link">Overview</a>
+              <a href="#goals" class="nav-link">Goals</a>
+              <a href="#approach" class="nav-link">Approach</a>
+              <a href="#impact" class="nav-link">Impact</a>
+              <a href="#timeline-resources" class="nav-link"
+                >Timeline & Resources</a
+              >
+              <a href="#references" class="nav-link">References</a>
+            </div>
+          </div>
+          <div class="md:hidden">
+            <button
+              id="mobile-menu-button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-stone-400 hover:text-sky-700 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="mobile-menu" class="md:hidden hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <a href="#overview" class="block nav-link text-base">Overview</a>
+          <a href="#goals" class="block nav-link text-base">Goals</a>
+          <a href="#approach" class="block nav-link text-base">Approach</a>
+          <a href="#impact" class="block nav-link text-base">Impact</a>
+          <a href="#timeline-resources" class="block nav-link text-base"
+            >Timeline & Resources</a
+          >
+          <a href="#references" class="block nav-link text-base">References</a>
+        </div>
+      </div>
+    </header>
+
+    <div
+      class="min-h-[calc(100vh-128px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div
+        class="bg-white p-6 sm:p-8 lg:p-10 rounded-xl shadow-2xl w-full max-w-5xl"
+      >
+        <main class="px-4 sm:px-6 lg:px-8 py-8">
+          <div class="text-center mb-12 mt-4">
+            <h2
+              class="text-4xl font-extrabold tracking-tight text-stone-900 sm:text-5xl"
+            >
+              Short-Term Electrical Load Demand Forecasting using Artificial
+              Intelligence Techniques
+            </h2>
+            <p class="mt-3 text-xl text-stone-600 sm:mt-4">
+              A Project Proposal by Abdullahi Yunus (U18EE1106)
+            </p>
+          </div>
+
+          <section id="overview" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">Project Overview</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              This section introduces the project, outlining the importance of
+              accurate electrical load forecasting for modern power systems and
+              the potential of Artificial Intelligence (AI) to enhance these
+              predictions, particularly for short-term needs.
+            </p>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                1. Introduction
+              </h4>
+              <p class="text-stone-700 leading-relaxed break-words">
+                The reliable and efficient operation of modern power systems is
+                critically dependent on accurate electrical load forecasting.
+                Load forecasting predicts future electricity demand, enabling
+                utility companies to make informed decisions regarding power
+                generation scheduling, energy trading, grid stability, and
+                resource management. Inaccuracies in forecasting can lead to
+                increased operational costs, potential energy shortages, or
+                unnecessary surplus generation, all of which have economic and
+                environmental implications.
+                <br /><br />
+                Short-term load forecasting (STLF), which typically predicts
+                load from a few hours to a week ahead, is particularly crucial
+                for daily operational planning. Traditional forecasting methods,
+                often based on statistical time-series models, can struggle with
+                the increasing complexity and non-linearity of load patterns
+                influenced by diverse factors such as weather conditions,
+                socio-economic activities, and the growing penetration of
+                renewable energy sources and new load types (e.g., electric
+                vehicles).
+                <br /><br />
+                Artificial Intelligence (AI), particularly Machine Learning (ML)
+                and Deep Learning (DL) techniques, has emerged as a powerful
+                approach to address these challenges. AI models can learn
+                complex patterns from historical data and adapt to changing
+                dynamics, offering the potential for significantly improved
+                forecasting accuracy. This project aims to explore, implement,
+                and evaluate various AI-based models for STLF.
+              </p>
+            </div>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                2. Problem Statement
+              </h4>
+              <p class="text-stone-700 leading-relaxed break-words">
+                Accurate STLF is a persistent challenge for power system
+                operators. Electrical load series are inherently complex,
+                non-linear, and influenced by a multitude of correlated factors
+                including:
+              </p>
+              <ul class="list-disc list-inside my-4 space-y-2 text-stone-700">
+                <li class="break-words">
+                  <strong>Weather conditions:</strong> Temperature, humidity,
+                  wind speed, and solar irradiance significantly impact heating,
+                  ventilation, air conditioning (HVAC), and lighting loads.
+                </li>
+                <li class="break-words">
+                  <strong>Temporal variations:</strong> Load patterns vary by
+                  time of day, day of the week, season, and are affected by
+                  public holidays and special events.
+                </li>
+                <li class="break-words">
+                  <strong>Stochasticity:</strong> Random human behavior and
+                  unforeseen events introduce inherent uncertainty.
+                </li>
+              </ul>
+              <p class="text-stone-700 leading-relaxed break-words">
+                Traditional forecasting methods may not adequately capture these
+                complex, non-linear relationships. This project seeks to address
+                the need for more robust and accurate STLF models by leveraging
+                the capabilities of AI techniques to better model these
+                influencing factors and improve prediction accuracy.
+              </p>
+              <div class="callout">
+                <p class="break-words">
+                  <strong>Nigerian Context:</strong> In the context of the
+                  Nigerian power grid, additional complexities such as
+                  intermittent supply and load shedding present unique
+                  challenges that this project may also explore if relevant data
+                  becomes accessible.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section id="goals" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">Aim & Objectives</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              This section clearly defines the primary goal of the project and
+              breaks it down into specific, measurable objectives that will
+              guide the research and development process.
+            </p>
+            <div class="card">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">Aim</h4>
+              <p
+                class="text-xl text-stone-700 font-medium leading-relaxed break-words"
+              >
+                To develop and evaluate accurate and robust Artificial
+                Intelligence-based models for short-term electrical load
+                forecasting.
+              </p>
+            </div>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                Objectives
+              </h4>
+              <ul class="space-y-3 text-stone-700">
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To conduct a comprehensive literature review of existing
+                    STLF techniques, with a focus on AI-based approaches.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To acquire and pre-process a suitable historical load
+                    dataset along with relevant exogenous variables (e.g.,
+                    weather data, calendar information).</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To perform feature engineering and selection to identify
+                    the most influential factors for load demand.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To implement and train a selection of AI models for STLF,
+                    including traditional machine learning algorithms (e.g.,
+                    Random Forest, Gradient Boosting) and deep learning models
+                    (e.g., LSTM).</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To evaluate the performance of the developed models using
+                    appropriate statistical metrics (e.g., RMSE, MAPE, MAE) and
+                    compare their effectiveness.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="objective-icon text-xl"></span
+                  ><span class="break-words"
+                    >To analyze the results, draw conclusions on the suitability
+                    of different AI models for STLF, and provide recommendations
+                    for future work.</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section id="approach" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">Approach & Scope</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              Here, the project's boundaries are detailed, including the
+              forecasting timeframe, data sources, AI techniques to be explored,
+              and evaluation methods. The step-by-step methodology for executing
+              the project is also outlined.
+            </p>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                4. Scope of Work
+              </h4>
+              <div class="space-y-4">
+                <div>
+                  <h5 class="font-semibold text-stone-800">
+                    Forecasting Horizon:
+                  </h5>
+                  <p class="text-stone-700 break-words">
+                    The project will focus on Short-Term Load Forecasting,
+                    specifically predicting hourly load demand for the next 24
+                    to 48 hours.
+                  </p>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-stone-800">Dataset:</h5>
+                  <p class="text-stone-700 break-words">
+                    Initially, this project will utilize a publicly available,
+                    well-documented historical load dataset from an established
+                    international grid operator (e.g., ISO New England, ENTSO-E
+                    Transparency Platform, or a similar dataset from a Kaggle
+                    competition). This ensures data quality and availability for
+                    focusing on model development.
+                  </p>
+                  <div class="callout text-sm">
+                    <p class="break-words">
+                      If a suitable and accessible dataset for a specific region
+                      or feeder in Nigeria can be obtained promptly, the scope
+                      can be adapted to focus on the local context. This would
+                      be a preferred outcome, but pragmatic considerations for
+                      data acquisition within the project timeline necessitate
+                      starting with a public dataset.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-stone-800">
+                    Data Sources and Features:
+                  </h5>
+                  <ul class="list-disc list-inside text-stone-700">
+                    <li class="break-words">
+                      Historical hourly electrical load data (minimum 2-3
+                      years).
+                    </li>
+                    <li class="break-words">
+                      Corresponding historical hourly weather data (e.g.,
+                      temperature, humidity, wind speed).
+                    </li>
+                    <li class="break-words">
+                      Calendar features (e.g., hour of day, day of week, month,
+                      holiday indicators).
+                    </li>
+                    <li class="break-words">
+                      Lagged load values from previous time steps.
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-stone-800">
+                    AI Techniques to be Explored (Tentative):
+                  </h5>
+                  <ul class="list-disc list-inside text-stone-700">
+                    <li class="break-words">
+                      Baseline model (e.g., SARIMA or a simple persistence
+                      model).
+                    </li>
+                    <li class="break-words">
+                      Machine Learning Models: Random Forest, XGBoost.
+                    </li>
+                    <li class="break-words">
+                      Deep Learning Models: Long Short-Term Memory (LSTM)
+                      networks.
+                    </li>
+                    <li class="break-words">
+                      Comparison of at least two distinct AI approaches.
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-stone-800">
+                    Evaluation Metrics:
+                  </h5>
+                  <p class="text-stone-700 break-words">
+                    Model performance will be assessed using Root Mean Squared
+                    Error (RMSE), Mean Absolute Percentage Error (MAPE), and
+                    Mean Absolute Error (MAE).
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                5. Methodology
+              </h4>
+              <p class="text-stone-700 mb-4 break-words">
+                The project will be executed in the following phases:
+              </p>
+              <ol class="list-decimal list-inside space-y-3 text-stone-700">
+                <li class="break-words">
+                  <strong>Literature Review:</strong> A thorough review of
+                  academic papers, journals, and conference proceedings on STLF,
+                  machine learning, and deep learning applications in power
+                  systems.
+                </li>
+                <li class="break-words">
+                  <strong>Data Acquisition and Understanding:</strong> Selection
+                  and download of a suitable public dataset. Initial exploration
+                  to understand its characteristics.
+                </li>
+                <li class="break-words">
+                  <strong>Data Pre-processing:</strong> Handling missing values,
+                  data cleaning, outlier detection, normalization/scaling, and
+                  splitting data into training, validation, and testing sets.
+                </li>
+                <li class="break-words">
+                  <strong>Feature Engineering and Selection:</strong> Creation
+                  of relevant features and selection of the most influential
+                  ones.
+                </li>
+                <li class="break-words">
+                  <strong>Model Development and Training:</strong>
+                  Implementation of selected AI models, hyperparameter tuning,
+                  and training.
+                </li>
+                <li class="break-words">
+                  <strong>Model Evaluation and Comparison:</strong> Evaluating
+                  models on the test dataset and comparing their performance.
+                </li>
+                <li class="break-words">
+                  <strong>Analysis, Documentation, and Reporting:</strong>
+                  Interpreting results, documenting the process, writing the
+                  final report, and preparing a presentation.
+                </li>
+              </ol>
+            </div>
+          </section>
+
+          <section id="impact" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">Impact & Outcomes</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              This part highlights the tangible results and deliverables of the
+              project, along with its broader significance in academic, skill
+              development, and practical application contexts.
+            </p>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                6. Expected Outcomes/Deliverables
+              </h4>
+              <ul class="space-y-3 text-stone-700">
+                <li class="flex items-start">
+                  <span class="deliverable-icon text-xl"></span
+                  ><span class="break-words"
+                    >A comprehensive project report detailing the research,
+                    methodology, implementation, results, and conclusions.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="deliverable-icon text-xl"></span
+                  ><span class="break-words"
+                    >Well-commented Python code for data pre-processing, feature
+                    engineering, model implementation, training, and
+                    evaluation.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="deliverable-icon text-xl"></span
+                  ><span class="break-words"
+                    >A comparative analysis of the performance of different
+                    AI-based STLF models on the selected dataset.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="deliverable-icon text-xl"></span
+                  ><span class="break-words"
+                    >Insights into the key factors influencing load demand for
+                    the chosen system.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="deliverable-icon text-xl"></span
+                  ><span class="break-words"
+                    >A final presentation summarizing the project work and
+                    findings.</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                7. Significance of the Project
+              </h4>
+              <ul class="space-y-3 text-stone-700">
+                <li class="flex items-start">
+                  <span class="significance-icon text-xl"></span
+                  ><span class="break-words"
+                    ><strong>Academic Contribution:</strong> It will provide a
+                    practical application and evaluation of advanced AI
+                    techniques in the critical area of power system
+                    engineering.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="significance-icon text-xl"></span
+                  ><span class="break-words"
+                    ><strong>Skill Development:</strong> It will equip the
+                    student with valuable skills in data science, machine
+                    learning, time-series analysis, and Python
+                    programming.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="significance-icon text-xl"></span
+                  ><span class="break-words"
+                    ><strong>Potential for Improved Efficiency:</strong>
+                    Methodologies and insights can be conceptually applied to
+                    local contexts, potentially improving grid operations.</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <span class="significance-icon text-xl"></span
+                  ><span class="break-words"
+                    ><strong>Foundation for Future Research:</strong> Findings
+                    could serve as a basis for further research into more
+                    sophisticated models or specific grid conditions.</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </section>
+
+          <section id="timeline-resources" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">Timeline & Resources</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              A proposed schedule for completing the project milestones is
+              presented here, along with a list of necessary software, hardware,
+              and academic resources.
+            </p>
+            <div class="card mt-[3rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                8. Tentative Timeline
+              </h4>
+              <div class="mt-6 flow-root">
+                <ul role="list" class="-mb-8">
+                  <li class="timeline-item">
+                    <div class="relative flex space-x-3">
+                      <div>
+                        <span
+                          class="h-8 w-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center ring-8 ring-white font-semibold"
+                          >1</span
+                        >
+                      </div>
+                      <div
+                        class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4"
+                      >
+                        <div><p class="text-sm text-stone-600">Month 1</p></div>
+                        <div
+                          class="text-sm text-stone-800 font-medium break-words"
+                        >
+                          In-depth literature review, dataset finalization, data
+                          pre-processing, and feature engineering.
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="relative flex space-x-3">
+                      <div>
+                        <span
+                          class="h-8 w-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center ring-8 ring-white font-semibold"
+                          >2</span
+                        >
+                      </div>
+                      <div
+                        class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4"
+                      >
+                        <div><p class="text-sm text-stone-600">Month 2</p></div>
+                        <div
+                          class="text-sm text-stone-800 font-medium break-words"
+                        >
+                          Model implementation (baseline & AI models),
+                          hyperparameter tuning, initial evaluation.
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="timeline-item">
+                    <div class="relative flex space-x-3">
+                      <div>
+                        <span
+                          class="h-8 w-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center ring-8 ring-white font-semibold"
+                          >3</span
+                        >
+                      </div>
+                      <div
+                        class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4"
+                      >
+                        <div><p class="text-sm text-stone-600">Month 3</p></div>
+                        <div
+                          class="text-sm text-stone-800 font-medium break-words"
+                        >
+                          In-depth results analysis, error analysis, model
+                          refinement, report writing & presentation preparation.
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card mt-[5rem]">
+              <h4 class="text-2xl font-semibold text-sky-600 mb-3">
+                9. Resources Required
+              </h4>
+              <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-stone-50 p-4 rounded-lg shadow">
+                  <h5 class="font-semibold text-stone-800 mb-2">Software:</h5>
+                  <ul class="list-disc list-inside text-stone-700">
+                    <li class="break-words">
+                      Python (with libraries: Pandas, NumPy, Scikit-learn,
+                      TensorFlow/Keras, Matplotlib, Seaborn).
+                    </li>
+                    <li class="break-words">
+                      A suitable IDE (e.g., VS Code, PyCharm) or Jupyter
+                      Notebook/Google Colab.
+                    </li>
+                  </ul>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-lg shadow">
+                  <h5 class="font-semibold text-stone-800 mb-2">Hardware:</h5>
+                  <ul class="list-disc list-inside text-stone-700">
+                    <li class="break-words">A standard personal computer.</li>
+                    <li class="break-words">
+                      Access to Google Colab for GPU resources if needed.
+                    </li>
+                  </ul>
+                </div>
+                <div class="bg-stone-50 p-4 rounded-lg shadow md:col-span-2">
+                  <h5 class="font-semibold text-stone-800 mb-2">
+                    Dataset & Academic Resources:
+                  </h5>
+                  <ul class="list-disc list-inside text-stone-700">
+                    <li class="break-words">
+                      Access to publicly available historical load and weather
+                      data.
+                    </li>
+                    <li class="break-words">
+                      Access to university library, IEEE Xplore, ScienceDirect,
+                      and other research databases.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="references" class="pt-16 -mt-16 mb-24">
+            <h3 class="section-title">References</h3>
+            <p class="mb-4 text-lg text-stone-700 break-words">
+              This section will list all academic papers, books, and other
+              resources cited throughout the project. For now, it serves as a
+              placeholder.
+            </p>
+            <div class="card mt-[3rem]">
+              <p class="text-stone-700 italic break-words">
+                A list of key academic papers and resources will be compiled and
+                cited throughout the project and in the final report.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <footer class="bg-stone-800 text-stone-300 py-8 text-center">
+      <p class="break-words">
+        &copy; 2025 Abdullahi Yunus. Interactive Project Proposal SPA.
+      </p>
+    </footer>
+
+    <script>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+      mobileMenuButton.addEventListener("click", () => {
+        const isExpanded =
+          mobileMenuButton.getAttribute("aria-expanded") === "true" || false;
+        mobileMenuButton.setAttribute("aria-expanded", !isExpanded);
+        mobileMenu.classList.toggle("hidden");
+        mobileMenuButton
+          .querySelectorAll("svg")
+          .forEach((svg) => svg.classList.toggle("hidden"));
+      });
+
+      // Smooth scroll for navigation links and active link highlighting
+      const navLinks = document.querySelectorAll(".nav-link");
+      const sections = document.querySelectorAll("main section");
+
+      navLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          // For mobile menu, close it after click
+          if (!mobileMenu.classList.contains("hidden")) {
+            mobileMenu.classList.add("hidden");
+            mobileMenuButton.setAttribute("aria-expanded", "false");
+            mobileMenuButton
+              .querySelectorAll("svg")
+              .forEach((svg) => svg.classList.toggle("hidden"));
+          }
+        });
+      });
+
+      // Sticky header background change on scroll
+      const header = document.getElementById("main-nav");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          header.classList.remove("bg-stone-50/80");
+          header.classList.add("bg-white/95");
+        } else {
+          header.classList.add("bg-stone-50/80");
+          header.classList.remove("bg-white/95");
+        }
+
+        // Active link highlighting
+        let currentSectionId = "";
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          if (pageYOffset >= sectionTop - (header.offsetHeight + 20)) {
+            // Adjust offset as needed
+            currentSectionId = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${currentSectionId}`) {
+            link.classList.add("active");
+          }
+        });
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+  </body>
+</html>
